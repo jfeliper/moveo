@@ -1,28 +1,19 @@
-/* Comprobación del funcionamiento del encoder magnético AS5047D por comparación con el encoder optico acoplado al eje
- * El encoder óptico lo leemos mediante la librería quadrature https://github.com/zacsketches/Encoder.git
- * Los canales Ay B del encoder incremental se cablean a los pines que permiten interrupción externa que son el 2 y 3
- * tuve que modificar la librería para activar las resistencias de pull-up internas
+/* Comprobación del funcionamiento del encoder magnético AS5047D  por SPI
  * 
  * El encoder magnético usa las funciones AS5047D_Write y AS5047D_Read definidas al final de este fichero.
  * del ejemplo de https://github.com/JanJansen47/AS5047D
  * Los pines SPI van cableados: D10 CS, D11 MOSI, D12 MISO, D13 SCK
  * 
  * La pantalla oled usa la librería https://github.com/adafruit/Adafruit_SSD1306
- * Es i2c cableada a A4 y A5
+ * Es i2c cableada a A4 y A5 en la dirección 0x3C
  * 
  * Para mover el motor paso a paso usamos la librería AccelStepper de http://www.airspayce.com/mikem/arduino/AccelStepper/
  * X_STEP_PIN  6             X_DIR_PIN   5               X_ENABLE_PIN  8
  * 
- * Para poder contrastar las lecturas del encoder incremental óptico y el magnético necesitamos iniciar el óptico cuando el magnético esté a 0
- * Esto lo hace la función ajusta_encoder() que va moviendo el motor hasta que lee 0. Entonces activa la variable encoder_ajustado a true y los dos cuentan desde 0
- * 
- * No se usa delay ni se escribe contínuamente en la pantalla porque interfiere con el movimiento del motor.
- * para eso usa el ejemplo de blink sin delay
  */
  
 #include <SPI.h>
 #include <AccelStepper.h>
-#include <quadrature.h>
 #include <Adafruit_SSD1306.h>
 
 #define OLED_RESET 4
